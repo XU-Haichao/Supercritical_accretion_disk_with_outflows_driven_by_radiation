@@ -1,4 +1,5 @@
-# 在这个程序中，我们一律用小写的名称表示无量纲量，用大写名称表示真实物理量
+# This is a target code that is called by other code to find inner boundary conditions.
+# The shooting method is implemented by fsolve function in scipy module.
 import numpy as np
 from numba import jit
 from math import *
@@ -7,20 +8,20 @@ from scipy.integrate import cumtrapz, simpson
 
 kappa = 0.4
 gamma = polyindex = 1.5
-r_in = 6  # 吸积盘内半径
-h_max = 2 ** 0.5 / 2  # 吸积盘最大无量纲半厚度
+r_in = 6
+h_max = 2 ** 0.5 / 2
 lw_out = 0
 xi_out = 1.5
 omega_in = 1.
 
-num = 2000  # 设置采样数目，该程序输出的分布样本数为num
+num = 2000
 
 
-def f_rad_crit(r):  # 任意位置的无量纲临界辐射，由(10)式给出
+def f_rad_crit(r):
     return (2 * 3 ** 0.5) / (9 * r ** 2)
 
 
-def h(f_rad_H, r):  # 求解两种情况下的无量纲吸积盘厚度
+def h(f_rad_H, r):
     def func_h(h):
         return f_rad_H - h / (r ** 2 * (1 + h ** 2) ** 1.5)
 
