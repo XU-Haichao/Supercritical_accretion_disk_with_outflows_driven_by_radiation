@@ -40,18 +40,6 @@ r = np.exp(lnr)
 Rg = (G_const * M) / (c_const ** 2)
 
 
-def f_rad_crit(r):  # Critical radiation of any radius.
-    return (2 * 3 ** 0.5) / (9 * r ** 2)
-
-
-def h(f_rad_H, r):  # Half thickness of accretion disk
-    def func_h(h):
-        return f_rad_H - h / (r ** 2 * (1 + h ** 2) ** 1.5)
-    if f_rad_H < f_rad_crit(r):
-        return float(fsolve(func_h, 0))
-    else:
-        return h_max
-
 # Here we derive the vertical structure of any radius.
 def vertical_structure(r, tau_H, f_rad_H):
     tau_z = np.linspace(0, tau_H, num)
@@ -82,23 +70,6 @@ def vertical_structure(r, tau_H, f_rad_H):
     return np.array([z, f_rad_z, vz_z, rho_z, T_z, Pres_z, tau_z])
 
 
-def outflows(r, tau_H, f_rad_H):
-    tau_z = np.linspace(0, tau_H, num).reshape(num)
-
-    def dGamma_dtau(tau_z):
-        return np.power((1 + 3 / 8 * tau_H - (3 * tau_z ** 2) / (8 * tau_H)), -1 / gamma)
-
-    Gamma_ = dGamma_dtau(tau_z)
-    Gamma = cumtrapz(Gamma_, tau_z, initial=0)
-    Gamma_H = Gamma[-1]
-
-    rho_H = Gamma_H / tau_H
-    z = Gamma / Gamma_H * h_max
-    f_rad_z = ((tau_z / tau_H) * f_rad_H)
-    vz_H = abs(simpson(2 * (r ** 2 * f_rad_z - z / (1 + z ** 2) ** 1.5), z)) ** 0.5
-    return np.array([float(rho_H), float(vz_H)])
-
-
 def f_rad_out(dotm_out):
     def fun_frad_out(frad_out):
         frad_crit_out = f_rad_crit(r_out)
@@ -122,16 +93,6 @@ def f_rad_out(dotm_out):
         return test - frad_out
 
     return float(fsolve(fun_frad_out, 1e-10))
-
-
-@jit
-def B(h):
-    return 1 / (1 + h) ** 1.5
-
-
-@jit
-def omega(frad, r, h, B):
-    return sqrt(1 - 0.5 * h * B * r ** 2 * frad)
 
 
 @jit
