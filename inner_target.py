@@ -17,11 +17,11 @@ omega_in = 1.
 num = 2000
 
 
-def f_rad_crit(r):
+def f_rad_crit(r):  # Critical radiation of any radius.
     return (2 * 3 ** 0.5) / (9 * r ** 2)
 
 
-def h(f_rad_H, r):
+def h(f_rad_H, r):  # Half thickness of accretion disk
     def func_h(h):
         return f_rad_H - h / (r ** 2 * (1 + h ** 2) ** 1.5)
 
